@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/d_blue"
+    android:orientation="vertical"
+    tools:context=".HomeActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/menu_display"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="0"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                app:srcCompat="@drawable/ic_nav_menu_hamburguer" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/account_config"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="0"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                app:srcCompat="@drawable/ic_login_white" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Bienvenido a" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="tu administrador de" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="30dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Tablas" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardBackgroundColor="@color/d_blue"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_top_shape"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/black"
+                android:textSize="25dp"
+                android:text="Mis Tablas" />
+
+            <Button
+                android:id="@+id/buttonGoToCliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:background="@drawable/button_list"
+                android:drawableEnd="@drawable/ic_next_arrow_resized"
+                android:gravity="start|center"
+                android:stateListAnimator="@null"
+                android:text="Clientes"
+                android:textSize="20sp"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/buttonGoToZonas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:background="@drawable/button_list"
+                android:drawableEnd="@drawable/ic_next_arrow_resized"
+                android:gravity="start|center"
+                android:stateListAnimator="@null"
+                android:text="Zonas"
+                android:textSize="20sp"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:id="@+id/buttonGoToMaestro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:background="@drawable/button_list"
+                android:drawableEnd="@drawable/ic_next_arrow_resized"
+                android:gravity="start|center"
+                android:stateListAnimator="@null"
+                android:text="Maestro de publicidad"
+                android:textSize="20sp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

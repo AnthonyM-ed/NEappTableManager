@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateAccountActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/createAccountActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"> <!-- Cambiado a wrap_content -->
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/d_blue"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:text="Cancelar"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:textSize="25sp" />
+
+            <ImageView
+                android:id="@+id/buttonCancel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="0"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                app:srcCompat="@drawable/ic_cancelx" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+            app:srcCompat="@drawable/ic_login" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Regístrate y gestiona tus tablas"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+        <EditText
+            android:id="@+id/editTextRegName"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:hint="Nombres"
+            android:inputType="text"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <EditText
+            android:id="@+id/editTextRegSurname"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="15sp"
+            android:background="@drawable/edittext_border"
+            android:hint="Apellidos"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRegName" />
+
+        <EditText
+            android:id="@+id/editTextRegEmail"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:hint="Correo electrónico"
+            android:textSize="15sp"
+            android:background="@drawable/edittext_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRegSurname" />
+
+        <EditText
+            android:id="@+id/editTextRegPassword"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:fontFamily="sans-serif"
+            android:hint="Contraseña"
+            android:textSize="15sp"
+            android:background="@drawable/edittext_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRegEmail" />
+
+        <EditText
+            android:id="@+id/editTextRegPasswordConfirm"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:fontFamily="sans-serif"
+            android:hint="Confirmar contraseña"
+            android:textSize="15sp"
+            android:background="@drawable/edittext_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRegPassword" />
+
+        <Button
+            android:id="@+id/buttonRegister"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="Registrarse"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRegPasswordConfirm" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

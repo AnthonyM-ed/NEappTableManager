@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clienteActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ClienteActivity">
+
+    <!-- Rectángulo superior -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/d_blue"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_back_arrow"
+            android:layout_gravity="center"
+            android:contentDescription="Regresar"
+            android:layout_marginStart="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="2dp"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mis Tablas"
+            android:layout_gravity="center"
+            android:paddingStart="2dp"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:gravity="start"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/refreshButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_refresh"
+            android:contentDescription="Recargar tabla" />
+    </LinearLayout>
+
+    <!-- ScrollView para el contenido desplazable -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Contenedor del contenido desplazable -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Barra de búsqueda -->
+            <LinearLayout
+                android:id="@+id/searchLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_border"
+                app:layout_constraintTop_toBottomOf="@id/headerLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <EditText
+                    android:id="@+id/searchBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_weight="99"
+                    android:layout_gravity="center"
+                    android:background="@drawable/edittext_nounderline"
+                    android:hint="Buscar" />
+
+                <ImageView
+                    android:id="@+id/imageViewSearch"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_search_black"
+                    android:contentDescription="Filtrar"/>
+
+            </LinearLayout>
+
+            <!-- Nombre de la tabla y botón de filtro -->
+            <LinearLayout
+                android:id="@+id/titleFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:paddingHorizontal="20dp"
+                app:layout_constraintTop_toBottomOf="@id/searchLayout">
+
+                <TextView
+                    android:id="@+id/tableName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_weight="1"
+                    android:text="Clientes"
+                    android:textSize="25sp"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/eliminarFiltrosText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Eliminar filtros"
+                    android:gravity="right"
+                    android:textColor="@color/black"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/filterButton"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_filter_black"
+                    android:contentDescription="Filtrar"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/filters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="15dp"
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"
+                android:background="@drawable/edittext_border"
+                app:layout_constraintTop_toBottomOf="@id/titleFilter">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Código"
+                        android:layout_marginHorizontal="5dp"
+                        android:paddingStart="5dp"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="Nombre"
+                        android:paddingStart="5dp"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <!-- Primer spinner para Código -->
+                    <Spinner
+                        android:id="@+id/spinnerCodigo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="5dp"
+                        android:spinnerMode="dropdown" />
+
+                    <!-- Segundo spinner para Nombre -->
+                    <Spinner
+                        android:id="@+id/spinnerNombre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="5dp"
+                        android:spinnerMode="dropdown" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Estado"
+                        android:layout_marginHorizontal="5dp"
+                        android:paddingStart="5dp"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1"/>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <!-- Tercer spinner para Estado -->
+                    <Spinner
+                        android:id="@+id/spinnerEstado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/spinner_background"
+                        android:layout_marginHorizontal="5dp"
+                        android:spinnerMode="dropdown" />
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Contenedor de la tabla -->
+            <HorizontalScrollView
+                android:id="@+id/tableContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/filters">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Cabeceras de la tabla -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/headerCodigo"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/header_table"
+                            android:padding="10dp"
+                            android:text="Código"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/headerNombre"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/header_table"
+                            android:padding="10dp"
+                            android:text="Nombre"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/headerEstado"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/header_table"
+                            android:padding="10dp"
+                            android:text="Estado"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <!-- RecyclerView para la tabla -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewClientes"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:nestedScrollingEnabled="true" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="35dp"
+        android:contentDescription="Agregar registro"
+        android:src="@drawable/ic_add_bold_white"
+        android:backgroundTint="@color/d_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_edit_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="35dp"
+        android:backgroundTint="@color/d_green"
+        android:contentDescription="Agregar registro"
+        android:visibility="gone"
+        android:src="@drawable/ic_edit_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fab_add_record" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_delete_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="35dp"
+        android:backgroundTint="@color/d_red"
+        android:contentDescription="Agregar registro"
+        android:src="@drawable/ic_delete_white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fab_edit_record" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_readd_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="35dp"
+        android:visibility="gone"
+        android:backgroundTint="#2167F3"
+        android:contentDescription="Agregar registro"
+        android:src="@drawable/ic_trash_restore_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fab_add_record" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

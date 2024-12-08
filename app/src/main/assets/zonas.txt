@@ -1,0 +1,12 @@
+Cayma|A
+Miraflores|A
+Yanahuara|A
+Cercado|A
+Jose Luis Bustamante|A
+Sierra|A
+Arequipa|A
+San Juan de Dios|A
+La Libertad|A
+Socabaya|I
+Hunter|A
+Characato|I
