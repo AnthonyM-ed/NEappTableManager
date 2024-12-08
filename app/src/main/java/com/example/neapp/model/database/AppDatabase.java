@@ -12,9 +12,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.neapp.model.dao.ClienteDao;
 import com.example.neapp.model.dao.MaestroPublicidadDao;
+import com.example.neapp.model.dao.UsuarioDao;
 import com.example.neapp.model.dao.ZonaDao;
 import com.example.neapp.model.ent.ClienteEntity;
 import com.example.neapp.model.ent.MaestroPublicidadEntity;
+import com.example.neapp.model.ent.UsuarioEntity;
 import com.example.neapp.model.ent.ZonaEntity;
 
 import java.io.BufferedReader;
@@ -28,6 +30,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ClienteDao clienteDao();
     public abstract ZonaDao zonaDao();
     public abstract MaestroPublicidadDao maestroPublicidadDao();
+    public abstract UsuarioDao usuarioDao();
 
     private static volatile AppDatabase INSTANCE;
 
@@ -61,6 +64,7 @@ public abstract class AppDatabase extends RoomDatabase {
         Executors.newSingleThreadExecutor().execute(() -> {
             cargarClientesDesdeArchivo(context);
             cargarZonasDesdeArchivo(context);
+            cargarUsuariosDesdeArchivo(context);
         });
     }
 
@@ -107,6 +111,74 @@ public abstract class AppDatabase extends RoomDatabase {
             reader.close();
         } catch (IOException e) {
             Log.e("AppDatabase", "Error leyendo zonas.txt", e);
+        }
+    }
+
+    private static void cargarMaestroPublicidadDesdeArchivo(Context context) {
+        try {
+            AssetManager assetManager = context.getAssets();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("maestroPublicidad.txt")));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 5) { // Validar el formato correcto
+                    String nombrePublicidad = parts[0];
+                    int clienteCod = Integer.parseInt(parts[1]);
+                    int zonaCod = Integer.parseInt(parts[2]);
+                    String ubicacion = parts[3];
+                    String estadoRegistro = parts[4];
+
+                    // Validar que clienteCod y zonaCod existan
+                    boolean clienteExiste = INSTANCE.clienteDao().existsById(clienteCod);
+                    boolean zonaExiste = INSTANCE.zonaDao().existsById(zonaCod);
+
+                    if (clienteExiste && zonaExiste) {
+                        // Crear la entidad MaestroPublicidad
+                        MaestroPublicidadEntity publicidad = new MaestroPublicidadEntity();
+                        publicidad.setPubNom(nombrePublicidad);
+                        publicidad.setCliCod(clienteCod);
+                        publicidad.setZonCod(zonaCod);
+                        publicidad.setPubUbi(ubicacion);
+                        publicidad.setPubEstReg(estadoRegistro);
+
+                        // Insertar en la base de datos
+                        INSTANCE.maestroPublicidadDao().insertMaestroPublicidad(publicidad);
+                    } else {
+                        Log.w("AppDatabase", "No se pudo insertar: Cliente o Zona no existen. ClienteCod=" + clienteCod + ", ZonaCod=" + zonaCod);
+                    }
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            Log.e("AppDatabase", "Error leyendo MaestroPublicidad.txt", e);
+        }
+    }
+
+    // Método para cargar usuarios desde el archivo txt
+    private static void cargarUsuariosDesdeArchivo(Context context) {
+        try {
+            AssetManager assetManager = context.getAssets();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("usuarios.txt")));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 4) { // Nombre|Apellido|Correo Electronico|Contraseña
+                    // Crear un objeto UsuarioEntity (debes tener la entidad UsuarioEntity y su DAO)
+                    UsuarioEntity usuario = new UsuarioEntity();
+                    usuario.setUsuNombre(parts[0] + " " + parts[1]); // Concatenar nombre y apellido
+                    usuario.setUsuCorreo(parts[2]);
+                    usuario.setUsuContrasena(parts[3]);
+                    usuario.setUsuEstReg("A"); // Estado por defecto
+
+                    // Insertar el usuario en la base de datos
+                    INSTANCE.usuarioDao().insertUsuario(usuario);
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            Log.e("AppDatabase", "Error leyendo usuarios.txt", e);
         }
     }
 }

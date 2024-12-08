@@ -1,0 +1,12 @@
+Publicidad Uno|1|11|Av. Siempre Viva 742|A
+Publicidad Dos|2|9|Calle Falsa 123|A
+Publicidad Tres|4|8|Paseo de la Reforma 100|I
+Publicidad Cuatro|5|7|Av. Libertador 45|A
+Publicidad Cinco|8|6|Calle San Martin 301|A
+Publicidad Seis|9|5|Av. Independencia 100|I
+Publicidad Siete|11|4|Av. Corrientes 860|A
+Publicidad Ocho|1|3|Calle San Juan 200|A
+Publicidad Nueve|2|2|Av. Belgrano 350|I
+Publicidad Diez|4|1|Calle Colón 250|A
+Publicidad Once|5|11|Calle Rivadavia 800|A
+Publicidad Doce|8|9|Av. Mitre 150|I

@@ -39,4 +39,7 @@ public interface ClienteDao {
     // Obtener nombre del cliente por su código
     @Query("SELECT cliNom FROM Cliente WHERE cliCod = :codigo")
     LiveData<String> getNombreClienteByCodigo(int codigo);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM Cliente WHERE cliCod = :clienteCod)")
+    boolean existsById(int clienteCod);
 }

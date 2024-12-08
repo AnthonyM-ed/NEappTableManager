@@ -1,0 +1,2 @@
+Admin|Administrador|admin123@admin.com|admin123
+Anthony|Miyo|tonymiyo132@gmail.com|qwerty123

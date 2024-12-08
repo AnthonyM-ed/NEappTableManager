@@ -40,4 +40,7 @@ public interface ZonaDao {
     // Obtener nombre de la zona por su código
     @Query("SELECT zonNom FROM Zona WHERE zonCod = :codigo")
     LiveData<String> getNombreZonaByCodigo(int codigo);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM Zona WHERE zonCod = :zonaCod)")
+    boolean existsById(int zonaCod);
 }
