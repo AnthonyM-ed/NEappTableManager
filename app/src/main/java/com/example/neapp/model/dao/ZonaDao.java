@@ -25,6 +25,9 @@ public interface ZonaDao {
     @Query("SELECT * FROM Zona WHERE zonEstReg = '*'")
     LiveData<List<ZonaEntity>> getDeletedZonas();
 
+    @Query("SELECT * FROM Zona WHERE zonEstReg = 'A'")
+    LiveData<List<ZonaEntity>> getActiveZonas();
+
     @Query("SELECT * FROM Zona WHERE zonCod = :id")
     LiveData<ZonaEntity> getZonaById(int id);
 

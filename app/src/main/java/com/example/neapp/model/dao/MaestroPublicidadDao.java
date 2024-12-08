@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.neapp.model.ent.MaestroPublicidadEntity;
+import com.example.neapp.model.ent.ZonaEntity;
 
 import java.util.List;
 
@@ -17,14 +18,15 @@ public interface MaestroPublicidadDao {
     @Query("SELECT * FROM MaestroPublicidad")
     LiveData<List<MaestroPublicidadEntity>> getAllMaestroPublicidad();
 
+    // Filtrar registros con estado "*"
+    @Query("SELECT * FROM MaestroPublicidad WHERE pubEstReg != '*'")
+    LiveData<List<MaestroPublicidadEntity>> getNonDeletedPublicidades();
+
+    @Query("SELECT * FROM MaestroPublicidad WHERE pubEstReg = '*'")
+    LiveData<List<MaestroPublicidadEntity>> getDeletedPublicidades();
+
     @Query("SELECT * FROM MaestroPublicidad WHERE pubCod = :id")
     LiveData<MaestroPublicidadEntity> getMaestroPublicidadById(int id);
-
-    @Query("SELECT * FROM MaestroPublicidad WHERE cliCod = :clienteId")
-    LiveData<List<MaestroPublicidadEntity>> getMaestroPublicidadByClienteId(int clienteId);
-
-    @Query("SELECT * FROM MaestroPublicidad WHERE zonCod = :zonaId")
-    LiveData<List<MaestroPublicidadEntity>> getMaestroPublicidadByZonaId(int zonaId);
 
     @Insert
     void insertMaestroPublicidad(MaestroPublicidadEntity maestroPublicidad);

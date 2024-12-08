@@ -24,6 +24,9 @@ public interface ClienteDao {
     @Query("SELECT * FROM Cliente WHERE cliEstReg = '*'")
     LiveData<List<ClienteEntity>> getDeletedClientes();
 
+    @Query("SELECT * FROM Cliente WHERE cliEstReg = 'A'")
+    LiveData<List<ClienteEntity>> getActiveClientes();
+
     @Query("SELECT * FROM Cliente WHERE cliCod = :id")
     LiveData<ClienteEntity> getClienteById(int id);
 

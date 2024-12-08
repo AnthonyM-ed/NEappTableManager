@@ -13,11 +13,13 @@ public class ClienteViewModel extends ViewModel {
     private final ClienteDao clienteDao;
     private final LiveData<List<ClienteEntity>> allClientes;
     private final LiveData<List<ClienteEntity>> deletedClientes;
+    private final LiveData<List<ClienteEntity>> activeClientes;
 
     public ClienteViewModel(AppDatabase database) {
         clienteDao = database.clienteDao(); // Inicializa el clienteDao
         allClientes = clienteDao.getNonDeletedClientes(); // Obtiene la lista de clientes desde la base de datos
         deletedClientes = clienteDao.getDeletedClientes();
+        activeClientes = clienteDao.getActiveClientes();
     }
 
     public LiveData<List<ClienteEntity>> getAllClientes() {
@@ -28,7 +30,16 @@ public class ClienteViewModel extends ViewModel {
         return deletedClientes; // Método para acceder a los clientes eliminados
     }
 
+    public LiveData<List<ClienteEntity>> getActiveClientes() {
+        return activeClientes; // Método para acceder a los clientes eliminados
+    }
+
     public void updateCliente(ClienteEntity cliente) {
         new Thread(() -> clienteDao.updateCliente(cliente)).start(); // Ejecución en un hilo separado
+    }
+
+    // Método para obtener el nombre del cliente por código
+    public LiveData<String> getNombreClienteByCodigo(int codigo) {
+        return clienteDao.getNombreClienteByCodigo(codigo);
     }
 }

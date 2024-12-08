@@ -20,10 +20,12 @@ public class ZonaEntity {
     }
 
     public int getZonCod() {
+
         return zonCod;
     }
 
     public void setZonCod(int zonCod) {
+
         this.zonCod = zonCod;
     }
 

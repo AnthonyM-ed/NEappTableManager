@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.neapp.fragment.CrearClienteFragment;
 import com.example.neapp.fragment.EditarClienteFragment;
-import com.example.neapp.fragment.CrearZonaFragment; // Asegúrate de importar el fragmento
-import com.example.neapp.fragment.EditarZonaFragment; // Asegúrate de importar el fragmento
+import com.example.neapp.fragment.CrearZonaFragment;
+import com.example.neapp.fragment.EditarZonaFragment;
+import com.example.neapp.fragment.CrearPublicidadFragment;
+import com.example.neapp.fragment.EditarPublicidadFragment;
 
 public class FormularioActivity extends AppCompatActivity {
 
@@ -47,6 +49,10 @@ public class FormularioActivity extends AppCompatActivity {
                 return CrearZonaFragment.newInstance(); // Sin datos
             case "editar_zona":
                 return EditarZonaFragment.newInstance(data); // Con datos
+            case "crear_publicidad":
+                return CrearPublicidadFragment.newInstance(); // Sin datos
+            case "editar_publicidad":
+                return EditarPublicidadFragment.newInstance(data); // Con datos
             default:
                 return null;
         }

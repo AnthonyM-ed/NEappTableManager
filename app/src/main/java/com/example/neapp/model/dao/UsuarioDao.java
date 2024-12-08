@@ -17,15 +17,15 @@ public interface UsuarioDao {
     @Update
     void updateUsuario(UsuarioEntity usuario);
 
-    @Query("SELECT * FROM usuarios WHERE usuEstReg = 'A'")
+    @Query("SELECT * FROM Usuario WHERE usuEstReg = 'A'")
     List<UsuarioEntity> getUsuariosActivos();
 
-    @Query("SELECT * FROM usuarios WHERE usuCod = :usuarioId")
+    @Query("SELECT * FROM Usuario WHERE usuCod = :usuarioId")
     UsuarioEntity getUsuarioById(int usuarioId);
 
-    @Query("DELETE FROM usuarios WHERE usuCod = :usuarioId")
+    @Query("DELETE FROM Usuario WHERE usuCod = :usuarioId")
     void deleteUsuarioById(int usuarioId);
 
-    @Query("SELECT * FROM usuarios")
+    @Query("SELECT * FROM Usuario")
     List<UsuarioEntity> getAllUsuarios();
 }

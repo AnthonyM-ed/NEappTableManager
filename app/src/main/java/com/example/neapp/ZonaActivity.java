@@ -37,7 +37,7 @@ public class ZonaActivity extends AppCompatActivity {
     private FloatingActionButton fabAdd, fabEdit, fabDelete, fabReaddRecord;
     private RecyclerView recyclerView;
     private ZonaAdapter adapter;
-    private ZonaViewModel clienteViewModel;
+    private ZonaViewModel zonaViewModel;
     private ZonaEntity selectedZona;
     private EditText searchBar;
     private TextView textEliminarFiltros;
@@ -97,7 +97,7 @@ public class ZonaActivity extends AppCompatActivity {
         });
 
         AppDatabase database = AppDatabase.getInstance(this);
-        clienteViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
+        zonaViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
             @NonNull
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
@@ -106,7 +106,7 @@ public class ZonaActivity extends AppCompatActivity {
         }).get(ZonaViewModel.class);
 
         // Observa los cambios en la lista de zonas
-        clienteViewModel.getAllZonas().observe(this, zonas -> {
+        zonaViewModel.getAllZonas().observe(this, zonas -> {
             if (adapter == null) {
                     adapter = new ZonaAdapter(ZonaActivity.this, zonas);
                 recyclerView.setAdapter(adapter);
@@ -159,7 +159,7 @@ public class ZonaActivity extends AppCompatActivity {
     private void eliminarZona(ZonaEntity zona) {
         if (zona != null) {
             zona.setZonEstReg("*"); // Marcar como eliminado
-            clienteViewModel.updateZona(zona); // Actualiza en la base de datos
+            zonaViewModel.updateZona(zona); // Actualiza en la base de datos
             resetFilters();
             Toast.makeText(this, "Zona eliminada: " + zona.getZonNom(), Toast.LENGTH_SHORT).show();
         }
@@ -205,7 +205,7 @@ public class ZonaActivity extends AppCompatActivity {
     private void reactivarZona(ZonaEntity zona) {
         if (zona != null) {
             zona.setZonEstReg("A"); // Cambia "*" a "A" (activo)
-            clienteViewModel.updateZona(zona);
+            zonaViewModel.updateZona(zona);
             Toast.makeText(this, "Zona reactivada: " + zona.getZonNom(), Toast.LENGTH_SHORT).show();
             fabReaddRecord.setVisibility(View.GONE); // Ocultar el botón después de la reactivación
             resetFilters();
@@ -215,12 +215,12 @@ public class ZonaActivity extends AppCompatActivity {
     private void filterClientes(String query) {
         if (query.isEmpty()) {
             // Si el campo de búsqueda está vacío, mostrar todos los clientes
-            clienteViewModel.getAllZonas().observe(this, clientes -> adapter.updateZonas(clientes));
+            zonaViewModel.getAllZonas().observe(this, clientes -> adapter.updateZonas(clientes));
             return;
         }
 
         List<ZonaEntity> filteredResults = new ArrayList<>();
-        clienteViewModel.getAllZonas().observe(this, allZonas -> {
+        zonaViewModel.getAllZonas().observe(this, allZonas -> {
             if (allZonas != null) {
                 for (ZonaEntity zona : allZonas) {
                     String cliCod = "ZON" + zona.getZonCod();
@@ -258,10 +258,10 @@ public class ZonaActivity extends AppCompatActivity {
 
     private void applyFilters() {
         // Eliminar observadores anteriores de clientes eliminados
-        clienteViewModel.getDeletedZonas().removeObservers(this);
+        zonaViewModel.getDeletedZonas().removeObservers(this);
 
         // Obtenemos la lista completa de clientes (que es un LiveData)
-        clienteViewModel.getAllZonas().observe(this, allZonas -> {
+        zonaViewModel.getAllZonas().observe(this, allZonas -> {
             List<ZonaEntity> filteredZonas = new ArrayList<>();
 
             // Si hay clientes, procedemos a filtrar
@@ -271,7 +271,7 @@ public class ZonaActivity extends AppCompatActivity {
                 // Filtrar por estado (Activo/Inactivo/Eliminado)
                 String estadoFilter = spinnerEstado.getSelectedItem().toString();
                 if (estadoFilter.equals("Eliminado")) {
-                    clienteViewModel.getDeletedZonas().observe(this, deletedZonas -> {
+                    zonaViewModel.getDeletedZonas().observe(this, deletedZonas -> {
                         adapter.updateZonas(deletedZonas);
                     });
                     return; // Salimos aquí porque no aplicamos más filtros
@@ -307,7 +307,7 @@ public class ZonaActivity extends AppCompatActivity {
         spinnerCodigo.setSelection(0);
         spinnerNombre.setSelection(0);
         spinnerEstado.setSelection(0);
-        clienteViewModel.getAllZonas().observe(this, clientes -> adapter.updateZonas(clientes));
+        zonaViewModel.getAllZonas().observe(this, clientes -> adapter.updateZonas(clientes));
     }
 
     private void resetSelection() {

@@ -1,16 +1,29 @@
 package com.example.neapp.model.ent;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "usuarios")
+@Entity(tableName = "Usuario")
 public class UsuarioEntity {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "usuCod")
     private int usuCod; // Código único del usuario
+
+    @ColumnInfo(name = "usuNombre")
     private String usuNombre; // Nombre completo del usuario
+
+    @ColumnInfo(name = "usuCorreo")
     private String usuCorreo; // Correo electrónico del usuario
+
+    @ColumnInfo(name = "usuContrasena")
     private String usuContrasena; // Contraseña del usuario
+
+    @ColumnInfo(name = "usuEstReg")
     private String usuEstReg; // Estado de registro (A = Activo, I = Inactivo)
+
+    public UsuarioEntity() {
+    }
 
     // Getters y Setters
     public int getUsuCod() {
