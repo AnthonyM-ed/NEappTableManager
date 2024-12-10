@@ -14,26 +14,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.neapp.adapter.MaestroPublicidadAdapter;
-import com.example.neapp.model.database.AppDatabase;
+import com.example.neapp.model.ent.ClienteEntity;
 import com.example.neapp.model.ent.MaestroPublicidadEntity;
+import com.example.neapp.model.ent.ZonaEntity;
+import com.example.neapp.viewmodel.ClienteViewModel;
 import com.example.neapp.viewmodel.MaestroPublicidadViewModel;
+import com.example.neapp.viewmodel.ZonaViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MaestroPublicidadActivity extends AppCompatActivity {
     private ImageView backButton, refreshButton, filterButton;
     private LinearLayout filters;
-    private Spinner spinnerCodigo, spinnerNombre, spinnerEstado;
+    private Spinner spinnerCodigo, spinnerNombre, spinnerEstado, spinnerNombreCliente, spinnerNombreZona, spinnerUbicacion;
     private FloatingActionButton fabAdd, fabEdit, fabDelete, fabReaddRecord;
     private RecyclerView recyclerView;
     private MaestroPublicidadAdapter adapter;
@@ -41,11 +44,23 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
     private MaestroPublicidadEntity selectedPublicidad;
     private EditText searchBar;
     private TextView textEliminarFiltros;
+    private List<Spinner> filterSpinners;
+    private ClienteViewModel clienteViewModel;
+    private ZonaViewModel zonaViewModel;
+    private Map<Integer, String> clienteMap ;
+    private Map<Integer, String> zonaMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maestro_publicidad);
+
+        // Inicializa los ViewModels
+        clienteViewModel = new ViewModelProvider(this).get(ClienteViewModel.class);
+        zonaViewModel = new ViewModelProvider(this).get(ZonaViewModel.class);
+        publicidadViewModel = new ViewModelProvider(this).get(MaestroPublicidadViewModel.class);
+
+        adapter = new MaestroPublicidadAdapter(this, new ArrayList<>(), clienteViewModel, zonaViewModel, publicidadViewModel);
 
         backButton = findViewById(R.id.backButton);
         refreshButton = findViewById(R.id.refreshButton);
@@ -55,6 +70,9 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
         spinnerCodigo = findViewById(R.id.spinnerCodigo);
         spinnerNombre = findViewById(R.id.spinnerNombre);
         spinnerEstado = findViewById(R.id.spinnerEstado);
+        spinnerNombreCliente = findViewById(R.id.spinnerCliente);
+        spinnerNombreZona = findViewById(R.id.spinnerZona);
+        spinnerUbicacion = findViewById(R.id.spinnerUbicacion);
         recyclerView = findViewById(R.id.recyclerViewPublicidad);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fabAdd = findViewById(R.id.fab_add_record);
@@ -62,6 +80,49 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
         fabDelete = findViewById(R.id.fab_delete_record);
         fabReaddRecord = findViewById(R.id.fab_readd_record);
         textEliminarFiltros = findViewById(R.id.eliminarFiltrosText);
+
+        filterSpinners = new ArrayList<>();
+        filterSpinners.add(spinnerCodigo);
+        filterSpinners.add(spinnerNombre);
+        filterSpinners.add(spinnerNombreCliente);
+        filterSpinners.add(spinnerNombreZona);
+        filterSpinners.add(spinnerUbicacion);
+
+        recyclerView.setAdapter(adapter);
+        // Mapas para almacenar los nombres de los clientes y zonas
+        clienteMap = new HashMap<>();
+        zonaMap = new HashMap<>();
+
+        publicidadViewModel.getAllPublicidades().observe(this, publicidad -> {
+            if (adapter == null) {
+                setupAdapter(); // Asegúrate de configurar el adaptador si es null
+            }
+            adapter.updatePublicaciones(publicidad);
+        });
+
+        // Observa los cambios en la lista de clientes
+        clienteViewModel.getAllClientes().observe(this, clientes -> {
+            clienteMap.clear();
+            for (ClienteEntity cliente : clientes) {
+                clienteMap.put(cliente.getCliCod(), cliente.getCliNom());
+            }
+            adapter.setClienteMap(clienteMap); // Actualiza el mapa en el adaptador
+            adapter.updateMaps(clienteMap, zonaMap);
+        });
+
+        // Observa los cambios en la lista de zonas
+        zonaViewModel.getAllZonas().observe(this, zonas -> {
+            // Actualiza el mapa de nombres de clientes
+            zonaMap.clear();
+            for (ZonaEntity zona : zonas) {
+                zonaMap.put(zona.getZonCod(), zona.getZonNom());
+            }
+            adapter.setZonaMap(zonaMap); // Notifica al adapter sobre los cambios
+            adapter.updateMaps(clienteMap, zonaMap);
+        });
+
+        loadClientAndZoneNames();
+        configurarListeners();
 
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(MaestroPublicidadActivity.this, HomeActivity.class);
@@ -76,6 +137,7 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
             textEliminarFiltros.setVisibility(View.GONE);
             filterButton.setImageResource(R.drawable.ic_filter_black);
             filterButton.setTag("filter");
+            searchBar.setText("");
         });
 
         searchBar.setOnClickListener(v -> resetSelection());
@@ -96,57 +158,86 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
             }
         });
 
-        AppDatabase database = AppDatabase.getInstance(this);
-        publicidadViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new MaestroPublicidadViewModel(database);
-            }
-        }).get(MaestroPublicidadViewModel.class);
-
-        // Observa los cambios en la lista de zonas
-        publicidadViewModel.getAllPublicidades().observe(this, publicidad -> {
-            if (adapter == null) {
-                adapter = new MaestroPublicidadAdapter(MaestroPublicidadActivity.this, publicidad);
-                recyclerView.setAdapter(adapter);
-            } else {
-                adapter.updatePublicaciones(publicidad); // Actualiza el adaptador si ya está inicializado
-            }
-            configurarListeners(); // Configura los listeners después de inicializar el adaptador
-        });
-
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterClientes(s.toString());
+                filterPublicidad(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        setupSpinner(spinnerCodigo, R.array.filter_codigo_options, 2); // "Menor a mayor" como default
-        setupSpinner(spinnerNombre, R.array.filter_nombre_options, 0); // Ninguno como default
-        setupSpinner(spinnerEstado, R.array.filter_estado_options, 0); // Ninguno como default
+        setupSpinner(spinnerCodigo, R.array.filter_codigo_options, 2); // Ninguno como default
+        setupSpinner(spinnerNombre, R.array.filter_nombre_publicidad_options, 0); // Ninguno como default
+        setupSpinner(spinnerNombreCliente, R.array.filter_nombre_cliente_options, 0); // Ninguno como default
+        setupSpinner(spinnerNombreZona, R.array.filter_nombre_zona_options, 0); // Ninguno como default
+        setupSpinner(spinnerUbicacion, R.array.filter_ubicacion_options, 0); // Ninguno como default
+        setupSpinner(spinnerEstado, R.array.filter_estado_options, 0); // Ninguno como default // Ninguno como default
 
-        spinnerCodigo.setOnItemSelectedListener(createFilterListener(spinnerNombre));
-        spinnerNombre.setOnItemSelectedListener(createFilterListener(spinnerCodigo));
-        spinnerEstado.setOnItemSelectedListener(createFilterListener(null));
+        spinnerCodigo.setOnItemSelectedListener(createFilterListener(filterSpinners));
+        spinnerNombre.setOnItemSelectedListener(createFilterListener(filterSpinners));
+        spinnerNombreCliente.setOnItemSelectedListener(createFilterListener(filterSpinners));
+        spinnerNombreZona.setOnItemSelectedListener(createFilterListener(filterSpinners));
+        spinnerUbicacion.setOnItemSelectedListener(createFilterListener(filterSpinners));
+        spinnerEstado.setOnItemSelectedListener(createFilterListener(null)); // El estado puede seguir activo
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adapter = null; // Limpia la referencia del adaptador si es necesario
+    }
+
+    // Pre-cargar los nombres de los clientes y zonas al iniciar la actividad
+    private void loadClientAndZoneNames() {
+        clienteViewModel.getAllClientes().observe(this, clientes -> {
+            clienteMap.clear();
+            for (ClienteEntity cliente : clientes) {
+                clienteMap.put(cliente.getCliCod(), cliente.getCliNom());
+            }
+        });
+
+        zonaViewModel.getAllZonas().observe(this, zonas -> {
+            zonaMap.clear();
+            for (ZonaEntity zona : zonas) {
+                zonaMap.put(zona.getZonCod(), zona.getZonNom());
+            }
+        });
+    }
+
+    private void setupAdapter() {
+        // Verifica si el adaptador ya ha sido inicializado
+        if (adapter == null) {
+            adapter = new MaestroPublicidadAdapter(
+                    this,
+                    new ArrayList<>(),
+                    clienteViewModel,
+                    zonaViewModel,
+                    publicidadViewModel // Pasa el ViewModel al adaptador
+            );
+
+            // Establecer los mapas en el adaptador
+            adapter.setClienteMap(clienteMap);
+            adapter.setZonaMap(zonaMap);
+
+            recyclerView.setAdapter(adapter);
+        }
+    }
+
 
     private void agregarPublicidad() {
         Intent intent = new Intent(this, FormularioActivity.class);
-        intent.putExtra(FormularioActivity.EXTRA_FRAGMENT_TYPE, "crear_zona");
+        intent.putExtra(FormularioActivity.EXTRA_FRAGMENT_TYPE, "crear_publicidad");
         startActivityForResult(intent, 1);
     }
 
     private void editarPublicidad(MaestroPublicidadEntity publicidad) {
         Intent intent = new Intent(this, FormularioActivity.class);
-        intent.putExtra(FormularioActivity.EXTRA_FRAGMENT_TYPE, "editar_zona");
+        intent.putExtra(FormularioActivity.EXTRA_FRAGMENT_TYPE, "editar_publicidad");
 
         Bundle data = new Bundle();
         data.putInt("pub_cod", publicidad.getPubCod());
@@ -164,7 +255,7 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
             publicidad.setPubEstReg("*"); // Marcar como eliminado
             publicidadViewModel.updatePublicidad(publicidad); // Actualiza en la base de datos
             resetFilters();
-            Toast.makeText(this, "Zona eliminada: " + publicidad.getPubNom(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Publicidad eliminada: " + publicidad.getPubNom(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -209,26 +300,45 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
         if (publicidad != null) {
             publicidad.setPubEstReg("A"); // Cambia "*" a "A" (activo)
             publicidadViewModel.updatePublicidad(publicidad);
-            Toast.makeText(this, "Zona reactivada: " + publicidad.getPubNom(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Publicidad reactivada: " + publicidad.getPubNom(), Toast.LENGTH_SHORT).show();
             fabReaddRecord.setVisibility(View.GONE); // Ocultar el botón después de la reactivación
             resetFilters();
         }
     }
 
-    private void filterClientes(String query) {
+    private void filterPublicidad(String query) {
         if (query.isEmpty()) {
-            // Si el campo de búsqueda está vacío, mostrar todos los clientes
+            // Si el campo de búsqueda está vacío, mostrar todas las publicidades
             publicidadViewModel.getAllPublicidades().observe(this, publicidad -> adapter.updatePublicaciones(publicidad));
             return;
         }
 
         List<MaestroPublicidadEntity> filteredResults = new ArrayList<>();
-        publicidadViewModel.getAllPublicidades().observe(this, allZonas -> {
-            if (allZonas != null) {
-                for (MaestroPublicidadEntity publicidad : allZonas) {
-                    String cliCod = "ZON" + publicidad.getPubCod();
-                    if (cliCod.toLowerCase().contains(query.toLowerCase()) ||
-                            publicidad.getPubNom().toLowerCase().contains(query.toLowerCase())) {
+        publicidadViewModel.getAllPublicidades().observe(this, allPublicidades -> {
+            if (allPublicidades != null) {
+                for (MaestroPublicidadEntity publicidad : allPublicidades) {
+                    String cliCod = "PUB" + publicidad.getPubCod();
+
+                    // Comprobar coincidencias en el código de la publicidad
+                    boolean matchesCodigo = cliCod.toLowerCase().contains(query.toLowerCase());
+
+                    // Comprobar coincidencias en el nombre de la publicidad
+                    boolean matchesPublicidad = publicidad.getPubNom().toLowerCase().contains(query.toLowerCase());
+
+                    // Obtener el nombre del cliente
+                    String nombreCliente = clienteMap.get(publicidad.getCliCod());
+                    boolean matchesCliente = nombreCliente != null && nombreCliente.toLowerCase().contains(query.toLowerCase());
+
+                    // Obtener el nombre de la zona
+                    String nombreZona = zonaMap.get(publicidad.getZonCod());
+                    boolean matchesZona = nombreZona != null && nombreZona.toLowerCase().contains(query.toLowerCase());
+
+                    // Comprobar coincidencias en la ubicación
+                    String ubicacion = publicidad.getPubUbi(); // Asegúrate de que este método existe
+                    boolean matchesUbicacion = ubicacion != null && ubicacion.toLowerCase().contains(query.toLowerCase());
+
+                    // Añadir a los resultados si hay alguna coincidencia
+                    if (matchesCodigo || matchesPublicidad || matchesCliente || matchesZona || matchesUbicacion) {
                         filteredResults.add(publicidad);
                     }
                 }
@@ -244,73 +354,124 @@ public class MaestroPublicidadActivity extends AppCompatActivity {
         spinner.setSelection(defaultSelection);
     }
 
-    private AdapterView.OnItemSelectedListener createFilterListener(Spinner otherSpinner) {
+    private AdapterView.OnItemSelectedListener createFilterListener(List<Spinner> spinners) {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Aplicar filtros aquí
                 applyFilters();
-                if (otherSpinner != null) {
-                    otherSpinner.setSelection(0); // Resetear el otro spinner si se aplica un filtro
+
+                // Solo resetear si la opción seleccionada no es "Ninguno"
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if (!selectedItem.equals("Ninguno")) {
+                    if (spinners != null) {  // Verifica que spinners no sea null
+                        for (Spinner spinner : spinners) {
+                            if (spinner != parent) {  // Asegúrate de no deseleccionar el spinner actual
+                                spinner.setSelection(0); // Resetear cada spinner en la lista
+                            }
+                        }
+                    }
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Aquí podrías hacer algo si no hay nada seleccionado, si es necesario
+            }
         };
     }
 
     private void applyFilters() {
-        // Eliminar observadores anteriores de clientes eliminados
-        publicidadViewModel.getDeletedPublicidades().removeObservers(this);
+        publicidadViewModel.getAllPublicidades().observe(this, allPublicidades -> {
+            if (allPublicidades == null) {
+                adapter.updatePublicaciones(new ArrayList<>()); // Actualiza con lista vacía
+                return; // Salimos aquí si no hay publicidades
+            }
 
-        // Obtenemos la lista completa de clientes (que es un LiveData)
-        publicidadViewModel.getAllPublicidades().observe(this, allPublicidad -> {
-            List<MaestroPublicidadEntity> filteredPublicidades = new ArrayList<>();
+            List<MaestroPublicidadEntity> filteredPublicidades = new ArrayList<>(allPublicidades);
 
-            // Si hay clientes, procedemos a filtrar
-            if (allPublicidad != null) {
-                filteredPublicidades.addAll(allPublicidad);
+            // Filtrar por estado
+            String estadoFilter = spinnerEstado.getSelectedItem() != null ? spinnerEstado.getSelectedItem().toString() : null;
+            if ("Eliminado".equals(estadoFilter)) {
+                publicidadViewModel.getDeletedPublicidades().observe(this, deletedPublicidades -> {
+                    adapter.updatePublicaciones(deletedPublicidades);
+                });
+                return; // Salimos aquí porque no aplicamos más filtros
+            } else if (estadoFilter != null && !estadoFilter.equals("Ninguno")) {
+                String estadoReal = "Activo".equals(estadoFilter) ? "A" : "I"; // A y I representan los estados
+                filteredPublicidades.removeIf(publicidad -> !publicidad.getPubEstReg().equalsIgnoreCase(estadoReal));
+            }
 
-                // Filtrar por estado (Activo/Inactivo/Eliminado)
-                String estadoFilter = spinnerEstado.getSelectedItem().toString();
-                if (estadoFilter.equals("Eliminado")) {
-                    publicidadViewModel.getDeletedPublicidades().observe(this, deletedZonas -> {
-                        adapter.updatePublicaciones(deletedZonas);
-                    });
-                    return; // Salimos aquí porque no aplicamos más filtros
-                } else if (!estadoFilter.equals("Ninguno")) {
-                    String estadoReal = estadoFilter.equals("Activo") ? "A" : "I";
-                    filteredPublicidades.removeIf(cliente -> !cliente.getPubEstReg().equalsIgnoreCase(estadoReal));
-                }
-
-                // Filtrar por código
-                String codigoFilter = spinnerCodigo.getSelectedItem().toString();
+            // Filtrar por código
+            String codigoFilter = spinnerCodigo.getSelectedItem().toString();
+            if (!codigoFilter.equals("Ninguno")) {
                 if (codigoFilter.equals("Mayor a menor")) {
-                    filteredPublicidades.sort((a, b) -> Integer.compare(b.getZonCod(), a.getZonCod()));
+                    filteredPublicidades.sort((a, b) -> Integer.compare(b.getPubCod(), a.getPubCod()));
                 } else if (codigoFilter.equals("Menor a mayor")) {
-                    filteredPublicidades.sort((a, b) -> Integer.compare(a.getZonCod(), b.getZonCod()));
+                    filteredPublicidades.sort((a, b) -> Integer.compare(a.getPubCod(), b.getPubCod()));
                 }
+            }
 
-                // Filtrar por nombre
-                String nombreFilter = spinnerNombre.getSelectedItem().toString();
-                if (nombreFilter.equals("A-Z")) {
+            // Filtrar por nombre de publicidad
+            String nombrePublicidadFilter = spinnerNombre.getSelectedItem() != null ? spinnerNombre.getSelectedItem().toString() : null;
+            if (nombrePublicidadFilter != null && !nombrePublicidadFilter.equals("Ninguno")) {
+                if ("A-Z".equals(nombrePublicidadFilter)) {
                     filteredPublicidades.sort((a, b) -> a.getPubNom().compareToIgnoreCase(b.getPubNom()));
-                } else if (nombreFilter.equals("Z-A")) {
+                } else if ("Z-A".equals(nombrePublicidadFilter)) {
                     filteredPublicidades.sort((a, b) -> b.getPubNom().compareToIgnoreCase(a.getPubNom()));
                 }
-
-                // Actualiza el adaptador con la lista filtrada
-                adapter.updatePublicaciones(filteredPublicidades);
             }
+
+            String nombreClienteFilter = spinnerNombreCliente.getSelectedItem() != null ? spinnerNombreCliente.getSelectedItem().toString() : null;
+            if (nombreClienteFilter != null && !nombreClienteFilter.equals("Ninguno")) {
+                filteredPublicidades.sort((a, b) -> {
+                    String nombreA = clienteMap.get(a.getCliCod());
+                    String nombreB = clienteMap.get(b.getCliCod());
+
+                    if (nombreA == null) return 1;
+                    if (nombreB == null) return -1;
+
+                    return "A-Z".equals(nombreClienteFilter) ?
+                            nombreA.compareToIgnoreCase(nombreB) :
+                            nombreB.compareToIgnoreCase(nombreA);
+                });
+            }
+
+            String nombreZonaFilter = spinnerNombreZona.getSelectedItem() != null ? spinnerNombreZona.getSelectedItem().toString() : null;
+            if (nombreZonaFilter != null && !nombreZonaFilter.equals("Ninguno")) {
+                filteredPublicidades.sort((a, b) -> {
+                    String nombreZonaA = zonaMap.get(a.getZonCod());
+                    String nombreZonaB = zonaMap.get(b.getZonCod());
+
+                    if (nombreZonaA == null) return 1;
+                    if (nombreZonaB == null) return -1;
+
+                    return "A-Z".equals(nombreZonaFilter) ?
+                            nombreZonaA.compareToIgnoreCase(nombreZonaB) :
+                            nombreZonaB.compareToIgnoreCase(nombreZonaA);
+                });
+            }
+
+            // Filtrar por ubicación
+            String ubicacionFilter = spinnerUbicacion.getSelectedItem() != null ? spinnerUbicacion.getSelectedItem().toString() : null;
+            if (ubicacionFilter != null && !ubicacionFilter.equals("Ninguno")) {
+                if ("A-Z".equals(ubicacionFilter)) {
+                    filteredPublicidades.sort((a, b) -> a.getPubUbi().compareToIgnoreCase(b.getPubUbi()));
+                } else if ("Z-A".equals(ubicacionFilter)) {
+                    filteredPublicidades.sort((a, b) -> b.getPubUbi().compareToIgnoreCase(a.getPubUbi()));
+                }
+            }
+
+            // Actualiza el adaptador con la lista filtrada
+            adapter.updatePublicaciones(filteredPublicidades);
         });
     }
 
-
     private void resetFilters() {
-        spinnerCodigo.setSelection(0);
-        spinnerNombre.setSelection(0);
-        spinnerEstado.setSelection(0);
-        publicidadViewModel.getAllPublicidades().observe(this, clientes -> adapter.updatePublicaciones(clientes));
+        for (Spinner spinner : filterSpinners) {
+            spinner.setSelection(0); // Establecer en "Ninguno"
+        }
+        publicidadViewModel.getAllPublicidades().observe(this, publicidades -> adapter.updatePublicaciones(publicidades));
     }
 
     private void resetSelection() {

@@ -36,4 +36,7 @@ public interface MaestroPublicidadDao {
 
     @Delete
     void deleteMaestroPublicidad(MaestroPublicidadEntity maestroPublicidad);
+
+    @Query("SELECT COUNT(*) FROM MaestroPublicidad")
+    int getCount();
 }

@@ -96,14 +96,7 @@ public class ClienteActivity extends AppCompatActivity {
             }
         });
 
-        AppDatabase database = AppDatabase.getInstance(this);
-        clienteViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new ClienteViewModel(database);
-            }
-        }).get(ClienteViewModel.class);
+        clienteViewModel = new ViewModelProvider(this).get(ClienteViewModel.class);
 
         // Observa los cambios en la lista de clientes
         clienteViewModel.getAllClientes().observe(this, clientes -> {
@@ -246,8 +239,11 @@ public class ClienteActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 applyFilters();
-                if (otherSpinner != null) {
-                    otherSpinner.setSelection(0); // Resetear el otro spinner si se aplica un filtro
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if (!selectedItem.equals("Ninguno")) {
+                    if (otherSpinner != null) {
+                        otherSpinner.setSelection(0); // Resetear el otro spinner si se aplica un filtro
+                    }
                 }
             }
 

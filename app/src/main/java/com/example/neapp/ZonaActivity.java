@@ -96,14 +96,7 @@ public class ZonaActivity extends AppCompatActivity {
             }
         });
 
-        AppDatabase database = AppDatabase.getInstance(this);
-        zonaViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new ZonaViewModel(database);
-            }
-        }).get(ZonaViewModel.class);
+        zonaViewModel = new ViewModelProvider(this).get(ZonaViewModel.class);
 
         // Observa los cambios en la lista de zonas
         zonaViewModel.getAllZonas().observe(this, zonas -> {
@@ -246,13 +239,19 @@ public class ZonaActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 applyFilters();
-                if (otherSpinner != null) {
-                    otherSpinner.setSelection(0); // Resetear el otro spinner si se aplica un filtro
+
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if (!selectedItem.equals("Ninguno")) {
+                    if (otherSpinner != null && otherSpinner != parent) {
+                        otherSpinner.setSelection(0); // Resetear el otro spinner si se aplica un filtro
+                    }
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Aquí podrías hacer algo si no hay nada seleccionado, si es necesario
+            }
         };
     }
 

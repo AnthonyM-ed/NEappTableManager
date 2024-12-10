@@ -22,10 +22,9 @@ import com.example.neapp.model.ent.ZonaEntity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ClienteEntity.class, ZonaEntity.class, MaestroPublicidadEntity.class}, version = 1)
+@Database(entities = {ClienteEntity.class, ZonaEntity.class, MaestroPublicidadEntity.class, UsuarioEntity.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ClienteDao clienteDao();
     public abstract ZonaDao zonaDao();
@@ -65,6 +64,7 @@ public abstract class AppDatabase extends RoomDatabase {
             cargarClientesDesdeArchivo(context);
             cargarZonasDesdeArchivo(context);
             cargarUsuariosDesdeArchivo(context);
+            //cargarMaestroPublicidadDesdeArchivo(context);
         });
     }
 
@@ -114,7 +114,7 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     }
 
-    private static void cargarMaestroPublicidadDesdeArchivo(Context context) {
+    public static void cargarMaestroPublicidadDesdeArchivo(Context context) {
         try {
             AssetManager assetManager = context.getAssets();
             BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open("maestroPublicidad.txt")));
@@ -167,7 +167,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (parts.length == 4) { // Nombre|Apellido|Correo Electronico|Contraseña
                     // Crear un objeto UsuarioEntity (debes tener la entidad UsuarioEntity y su DAO)
                     UsuarioEntity usuario = new UsuarioEntity();
-                    usuario.setUsuNombre(parts[0] + " " + parts[1]); // Concatenar nombre y apellido
+                    usuario.setUsuNombre(parts[0]);
+                    usuario.setUsuApellido(parts[1]);
                     usuario.setUsuCorreo(parts[2]);
                     usuario.setUsuContrasena(parts[3]);
                     usuario.setUsuEstReg("A"); // Estado por defecto

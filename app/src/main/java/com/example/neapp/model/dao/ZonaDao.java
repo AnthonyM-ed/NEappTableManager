@@ -7,7 +7,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.neapp.model.ent.ClienteEntity;
 import com.example.neapp.model.ent.ZonaEntity;
 
 import java.util.List;
@@ -43,6 +42,10 @@ public interface ZonaDao {
     // Obtener nombre de la zona por su código
     @Query("SELECT zonNom FROM Zona WHERE zonCod = :codigo")
     LiveData<String> getNombreZonaByCodigo(int codigo);
+
+    // Obtener estado de la zona por su código
+    @Query("SELECT zonEstReg FROM Zona WHERE zonCod = :codigo")
+    LiveData<String> getEstadoZonaByCodigo(int codigo);
 
     @Query("SELECT EXISTS(SELECT 1 FROM Zona WHERE zonCod = :zonaCod)")
     boolean existsById(int zonaCod);

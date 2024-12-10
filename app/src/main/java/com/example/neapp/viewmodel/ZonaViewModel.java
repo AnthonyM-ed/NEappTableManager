@@ -1,23 +1,27 @@
 package com.example.neapp.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.neapp.model.dao.ZonaDao;
 import com.example.neapp.model.database.AppDatabase;
-import com.example.neapp.model.ent.ClienteEntity;
 import com.example.neapp.model.ent.ZonaEntity;
 
 import java.util.List;
 
-public class ZonaViewModel extends ViewModel {
+public class ZonaViewModel extends AndroidViewModel {
     private final ZonaDao zonaDao;
     private final LiveData<List<ZonaEntity>> allZonas;
     private final LiveData<List<ZonaEntity>> deletedZonas;
     private final LiveData<List<ZonaEntity>> activeZonas;
 
-    public ZonaViewModel(AppDatabase database) {
-        zonaDao = database.zonaDao(); // Inicializa el zonaDao
+    public ZonaViewModel(@NonNull Application application) {
+        super(application);
+        AppDatabase db = AppDatabase.getInstance(application);
+        zonaDao = db.zonaDao(); // Inicializa el zonaDao
         allZonas = zonaDao.getNonDeletedZonas(); // Obtiene la lista de zonas desde la base de datos
         deletedZonas = zonaDao.getDeletedZonas();
         activeZonas = zonaDao.getActiveZonas();
@@ -30,8 +34,9 @@ public class ZonaViewModel extends ViewModel {
     public LiveData<List<ZonaEntity>> getDeletedZonas() {
         return deletedZonas; // Método para acceder a las zonas eliminadas
     }
+
     public LiveData<List<ZonaEntity>> getActiveZonas() {
-        return activeZonas; // Método para acceder a los clientes eliminados
+        return activeZonas; // Método para acceder a las zonas activas
     }
 
     public void updateZona(ZonaEntity zona) {
@@ -41,5 +46,9 @@ public class ZonaViewModel extends ViewModel {
     // Método para obtener el nombre de la zona por código
     public LiveData<String> getNombreZonaByCodigo(int codigo) {
         return zonaDao.getNombreZonaByCodigo(codigo);
+    }
+
+    public LiveData<String> getEstadoZonaByCodigo(int codigo) {
+        return zonaDao.getEstadoZonaByCodigo(codigo);
     }
 }

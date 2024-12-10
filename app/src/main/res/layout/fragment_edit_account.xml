@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateAccountActivity">
+    tools:context=".fragment.EditAccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/createAccountActivity"
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Regístrate y gestiona tus tablas"
+            android:text="Configuración de cuenta."
             android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -126,34 +126,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextRegEmail" />
 
-        <EditText
-            android:id="@+id/editTextRegPasswordConfirm"
-            android:layout_width="325dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:fontFamily="sans-serif"
-            android:hint="Confirmar contraseña"
-            android:textSize="15sp"
-            android:background="@drawable/edittext_border"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextRegPassword" />
-
         <Button
-            android:id="@+id/buttonRegister"
+            android:id="@+id/buttonUpdate"
             android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Registrarse"
+            android:text="Guardar"
             android:textSize="15sp"
             android:textColor="@color/white"
-            android:background="@drawable/button_login"
+            android:background="@drawable/button_safe"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:textAllCaps="false"
-            app:layout_constraintTop_toBottomOf="@+id/editTextRegPasswordConfirm" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextRegPassword" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NEapp</string>
+    <string name="app_name">Soluciones Moviles SAC</string>
     <!-- TODO: Remove or change this placeholder text -->
 
     <!-- Opciones para el spinner de Código -->
@@ -23,6 +23,32 @@
         <item>Inactivo</item>
         <item>Eliminado</item>
     </string-array>
+
+    <!-- Opciones para otros atributos que se pueden ordenar alfabéticamente -->
+    <string-array name="filter_nombre_publicidad_options">
+        <item>Ninguno</item>
+        <item>A-Z</item>
+        <item>Z-A</item>
+    </string-array>
+
+    <string-array name="filter_nombre_cliente_options">
+        <item>Ninguno</item>
+        <item>A-Z</item>
+        <item>Z-A</item>
+    </string-array>
+
+    <string-array name="filter_nombre_zona_options">
+        <item>Ninguno</item>
+        <item>A-Z</item>
+        <item>Z-A</item>
+    </string-array>
+
+    <string-array name="filter_ubicacion_options">
+        <item>Ninguno</item>
+        <item>A-Z</item>
+        <item>Z-A</item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

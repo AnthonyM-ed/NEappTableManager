@@ -75,6 +75,7 @@ public class CrearPublicidadFragment extends Fragment {
             listaClientes = clientes;
 
             List<String> nombresClientes = new ArrayList<>();
+            nombresClientes.add("Seleccionar Cliente"); // Agrega el hint
             for (ClienteEntity cliente : listaClientes) {
                 nombresClientes.add(cliente.getCliNom());
             }
@@ -82,6 +83,7 @@ public class CrearPublicidadFragment extends Fragment {
             ArrayAdapter<String> adapterClientes = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, nombresClientes);
             adapterClientes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerClientes.setAdapter(adapterClientes);
+            spinnerClientes.setSelection(0);
         });
     }
 
@@ -90,6 +92,7 @@ public class CrearPublicidadFragment extends Fragment {
             listaZonas = zonas;
 
             List<String> nombresZonas = new ArrayList<>();
+            nombresZonas.add("Seleccionar Zona"); // Agrega el hint
             for (ZonaEntity zona : listaZonas) {
                 nombresZonas.add(zona.getZonNom());
             }
@@ -97,6 +100,7 @@ public class CrearPublicidadFragment extends Fragment {
             ArrayAdapter<String> adapterZonas = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, nombresZonas);
             adapterZonas.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerZonas.setAdapter(adapterZonas);
+            spinnerZonas.setSelection(0);
         });
     }
 
@@ -112,19 +116,19 @@ public class CrearPublicidadFragment extends Fragment {
         int clienteSeleccionadoIndex = spinnerClientes.getSelectedItemPosition();
         int zonaSeleccionadaIndex = spinnerZonas.getSelectedItemPosition();
 
-        if (clienteSeleccionadoIndex < 0) {
+        if (clienteSeleccionadoIndex == 0) { // Cambiado a 0 para el hint
             Toast.makeText(requireContext(), "Por favor, seleccione un cliente válido", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (zonaSeleccionadaIndex < 0) {
+        if (zonaSeleccionadaIndex == 0) { // Cambiado a 0 para el hint
             Toast.makeText(requireContext(), "Por favor, seleccione una zona válida", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Obtener códigos de cliente y zona seleccionados
-        int clienteCodigo = listaClientes.get(clienteSeleccionadoIndex).getCliCod();
-        int zonaCodigo = listaZonas.get(zonaSeleccionadaIndex).getZonCod();
+        int clienteCodigo = listaClientes.get(clienteSeleccionadoIndex-1).getCliCod();
+        int zonaCodigo = listaZonas.get(zonaSeleccionadaIndex-1).getZonCod();
 
         // Crear publicidad
         MaestroPublicidadEntity nuevaPublicidad = new MaestroPublicidadEntity();

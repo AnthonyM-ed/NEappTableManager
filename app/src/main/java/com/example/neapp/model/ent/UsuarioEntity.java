@@ -13,6 +13,9 @@ public class UsuarioEntity {
     @ColumnInfo(name = "usuNombre")
     private String usuNombre; // Nombre completo del usuario
 
+    @ColumnInfo(name = "usuApellido")
+    private String usuApellido; // Apellido completo del usuario
+
     @ColumnInfo(name = "usuCorreo")
     private String usuCorreo; // Correo electrónico del usuario
 
@@ -42,6 +45,9 @@ public class UsuarioEntity {
         this.usuNombre = usuNombre;
     }
 
+    public String getUsuApellido() { return usuApellido; }
+
+    public void setUsuApellido(String usuApellido) { this.usuApellido = usuApellido; }
     public String getUsuCorreo() {
         return usuCorreo;
     }
