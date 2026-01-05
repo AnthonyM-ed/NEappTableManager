@@ -14,7 +14,8 @@
 ---
 ## Interfaces
 
-![splash-ui](https://github.com/user-attachments/assets/4a6a9894-1f0e-4e99-a500-e8e06f429eac)
+![splash-ui-resized](https://github.com/user-attachments/assets/8e62d385-23d4-4faf-a06a-a2195fafe23f)
+
 
 
 ## Descarga
