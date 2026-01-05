@@ -13,8 +13,8 @@
 
 ---
 ## Interfaces
-![splash-ui](https://github.com/user-attachments/assets/de4584f1-85fb-4253-8126-8179c24d1e52) ![login-ui](https://github.com/user-attachments/assets/a4a043f7-a50d-470a-b47e-14cc7433868f)
-![main-ui](https://github.com/user-attachments/assets/6c08d070-0287-419d-87e8-72a6669cfb47) ![table-ui](https://github.com/user-attachments/assets/e01fadf7-96b9-480b-90f0-e36083793ca1)
+
+![splash-ui](https://github.com/user-attachments/assets/4a6a9894-1f0e-4e99-a500-e8e06f429eac)
 
 
 ## Descarga
