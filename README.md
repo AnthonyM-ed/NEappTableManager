@@ -9,6 +9,9 @@
 
 **Aplicación para gestionar tablas. (Trabajo Final del curso de Negocios Electrónicos)**
 
+</div>
+
+---
 
 ## Descarga
 
