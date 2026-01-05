@@ -14,9 +14,8 @@
 ---
 ## Interfaces
 
-![splash-ui-resized](https://github.com/user-attachments/assets/8e62d385-23d4-4faf-a06a-a2195fafe23f)
-
-
+![splash-ui-resized](https://github.com/user-attachments/assets/8e62d385-23d4-4faf-a06a-a2195fafe23f) ![login-ui -resized](https://github.com/user-attachments/assets/b8c793e0-0129-43ca-a789-29be59fb84e6)
+![main-ui-resized](https://github.com/user-attachments/assets/8b947078-6554-49d6-8bfe-2067cc1da0d5) ![table-ui-resized](https://github.com/user-attachments/assets/98cc3ad2-4f8e-439b-bb41-70d0e3c7b6c9)
 
 ## Descarga
 
